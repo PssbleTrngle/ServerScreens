@@ -47,6 +47,7 @@ export default class Server extends BaseEntity {
             shell.execSync(`screen -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
         } catch (e) {
             console.error(e);
+            console.error(e.output?.toString())
             throw e;
         }
     }
