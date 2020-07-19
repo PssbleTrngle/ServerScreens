@@ -42,6 +42,7 @@ export default class RoleSeeder implements Seeder {
                 .into(Role)
                 .values(roles)
                 .execute()
+                
         } else if (process.env.NODE_ENV === 'development') {
 
             await Promise.all(roles.map(async values => {

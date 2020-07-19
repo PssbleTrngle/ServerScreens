@@ -20,9 +20,10 @@ export default class Server extends BaseEntity {
     path!: string;
 
     async isRunning() {
-        const output = shell.execSync(`screen -S ${this.name} -Q select . ; echo $?`).toString();
-        console.log(output, output === '0');
-        return output === '0';
+        const output = shell.execSync(`screen -S ${this.name} -Q select .`).toString();
+        const found = !output;
+        console.log(`Output: "${output}"`)
+        return found;
     }
 
     async start() {

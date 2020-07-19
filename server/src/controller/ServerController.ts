@@ -12,8 +12,8 @@ async function parseServer(server: Server, req: AuthRequest) {
     const show = online ? permissions.visible : permissions.visibleOffline;
     if (!show) return null;
 
-    const { name } = server;
-    return { name, online };
+    const { name, id } = server;
+    return { name, online, id, permissions };
 }
 
 async function perform(req: AuthRequest, permission: keyof Permissions, action: (s: Server) => any) {
@@ -34,7 +34,8 @@ export default class ServerController {
 
     async all(req: AuthRequest) {
         const servers = await Server.find();
-        return servers.map(s => parseServer(s, req)).filter(s => !!s);
+        const mapped = await Promise.all(servers.map(s => parseServer(s, req)));
+        return mapped.filter(s => !!s)
     }
 
     async start(req: AuthRequest) {
@@ -61,8 +62,7 @@ export default class ServerController {
         const { path, name } = req.body;
         if (!Server.NAME_REGEX.test(name)) throw new HttpError(400, 'Not a valid server name')
         return perform(req, 'update', s => {
-            s.path = path;
-            s.name = name;
+            Object.assign(s, { path, name })
             return s.save();
         })
     }
