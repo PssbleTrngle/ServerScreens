@@ -27,6 +27,8 @@ export default class AuthController {
             apikey.save();
 
         }
+
+        next();
     }
 
     async register(req: Request) {

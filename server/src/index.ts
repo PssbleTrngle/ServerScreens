@@ -41,8 +41,6 @@ createConnection(config as any).then(async connection => {
                 const r = func(req, res, next);
                 const result = r instanceof Promise ? await r : r;
 
-                if(res.finished) return;
-
                 if (result !== void 0) {
                     if (!!result) {
 
@@ -57,8 +55,6 @@ createConnection(config as any).then(async connection => {
                     } else {
                         res.status(404).send('Not found');
                     }
-                } else {
-                    next();
                 }
 
             } catch (e) {

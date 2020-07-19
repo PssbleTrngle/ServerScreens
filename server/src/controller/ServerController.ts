@@ -76,7 +76,6 @@ export default class ServerController {
 
         const iconPath = path.resolve(s.path, '..', 'server-icon.png');
         res.sendFile(iconPath);
-        return true;
     }
 
 }
