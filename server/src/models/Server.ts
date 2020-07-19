@@ -11,25 +11,29 @@ import { debug } from '../logging'
 @Entity()
 export default class Server extends BaseEntity {
 
-    static NAME_REGEX = /^[a-z_-]{3,30}$/i
     static PROPS = ['server-port', 'motd', 'gamemode', 'difficulty']
 
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', unique: true })
     name!: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', unique: true })
     path!: string;
 
     async isRunning() {
         try {
-            shell.execSync(`screen -S ${this.name} -Q select .`)
+            shell.execSync(`screen -S ${this.screenName()} -Q select .`)
             return true;
         } catch {
             return false;
         }
+    }
+
+    screenName() {
+        const cwd = path.resolve(this.path, '..')
+        return `${path.basename(cwd)}-${this.id}`;
     }
 
     async start() {
@@ -40,7 +44,7 @@ export default class Server extends BaseEntity {
         const cwd = path.resolve(this.path, '..')
         const file = path.basename(this.path)
         debug(`Executin in '${cwd}'`)
-        shell.execSync(`screen -S "${this.name}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+        shell.execSync(`screen -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
     }
 
     async getPermissions(role?: Role) {
@@ -56,11 +60,11 @@ export default class Server extends BaseEntity {
 
     execute(command: string) {
         const escaped = command.replace("'", "\\'")
-        shell.execSync(`screen -r ${this.name} -X stuff '${escaped}^M'`)
+        shell.execSync(`screen -r ${this.screenName()} -X stuff '${escaped}^M'`)
     }
 
     async properties() {
-        const file = path.resolve(this.path, '..', 'server.properties')
+        const file = path.resolve(this.screenName(), '..', 'server.properties')
 
         if (fs.existsSync(file)) {
             const content = fs.readFileSync(file).toString();

@@ -10,9 +10,10 @@
             $size: 100px;
             height: $size;
             display: grid;
+            align-items: center;
             grid-template:
-                "icon title status"
-                "icon description button"
+                "icon title address status"
+                "icon description description button"
                 / $size 1fr;
             gap: 10px;
 
@@ -29,12 +30,19 @@
 
             h2 {
                 grid-area: description;
+                font-size: 1.2rem;
+                color: #CCC;
             }
 
             button {
                 grid-area: button;
                 width: 40px;
                 height: 40px;
+            }
+
+            .address {
+                grid-area: address;
+                color: #AAA;
             }
 
             .status {

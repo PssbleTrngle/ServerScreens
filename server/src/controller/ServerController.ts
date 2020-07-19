@@ -56,7 +56,6 @@ export default class ServerController {
         const { path, name } = req.body;
         const { permissions } = (req.user?.role ?? await Role.defaultRole())
         if (!permissions.create) throw new HttpError(403, 'Illegal!')
-        if (!Server.NAME_REGEX.test(name)) throw new HttpError(400, 'Not a valid server name')
 
         debug('Creating server with', { path, name })
 
@@ -66,7 +65,6 @@ export default class ServerController {
 
     async update(req: AuthRequest) {
         const { path, name } = req.body;
-        if (!Server.NAME_REGEX.test(name)) throw new HttpError(400, 'Not a valid server name')
         return perform(req, 'update', s => {
             Object.assign(s, { path, name })
             return s.save();

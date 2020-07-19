@@ -128,10 +128,13 @@ class Api {
 
         if (update && method !== 'get') this.update();
 
-        if (response.ok)
-            return response.json() as Promise<Response<O>>;
-        else
+        if (response.ok) try {
+            return (await response.json()) as O;
+        } catch {
+            return undefined;
+        } else {
             throw new Error(await response.text() ?? 'Internal server error');
+        }
 
     }
 
