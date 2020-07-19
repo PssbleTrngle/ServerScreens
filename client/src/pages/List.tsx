@@ -13,11 +13,15 @@ const List = () => {
 
 const Server = (server: IServer) => {
     const { name, id, online, properties } = server;
+
+    const port = properties?.["server-port"];
+    const address = `somethingcatchy.net${port ? ':' + port : ''}`;
+
     return <li>
         <img src={`/api/server/${id}/icon`} alt='Server icon' />
         <h1>{name}</h1>
         <h2>{properties?.motd}</h2>
-        <p className='address'>{`somethingcatchy.net:${properties?.["server-port"]}`}</p>
+        <p className='address'>{online && address}</p>
         <p className='status'>
             <span>{online ? 'Online' : 'Offline'}</span>
             <img alt='Server status' src={require(`../assets/${online ? 'online' : 'offline'}.png`)} />

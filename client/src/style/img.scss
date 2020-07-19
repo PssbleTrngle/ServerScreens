@@ -2,18 +2,11 @@ img {
   position: relative;
   height: 100%;
   width: 100%;
+  image-rendering: pixelated;
 
   &:after {
     @include pseudo();
-    background-color: $cover-color;
-  }
-
-  & + svg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 6rem;
-    color: $cover-text;
-    transform: translate(-50%, -50%);
+    background-color: #777;
+    background-image: url('../assets/unknown_server.png');
   }
 }

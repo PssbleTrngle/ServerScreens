@@ -6,6 +6,7 @@ import Permissions from "../models/Permissions";
 import Role from "../models/Role";
 import { debug } from "../logging";
 import path from 'path'
+import fs from 'fs'
 
 async function parseServer(server: Server, req: AuthRequest) {
     const [online, permissions, properties] = await Promise.all([
@@ -78,7 +79,7 @@ export default class ServerController {
         if (!server) throw new HttpError(403, 'Illegal!')
 
         const iconPath = path.resolve(s.path, '..', 'server-icon.png');
-        res.sendFile(iconPath);
+        return fs.existsSync(iconPath) ? res.sendFile(iconPath) : null;
     }
 
 }

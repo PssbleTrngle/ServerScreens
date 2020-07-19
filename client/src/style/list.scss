@@ -17,6 +17,10 @@
                 / $size 1fr;
             gap: 10px;
 
+            &:not(:last-child) {
+                margin-bottom: 20px;
+            }
+
             text-align: left;
 
             img {

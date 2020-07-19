@@ -43,8 +43,12 @@ export default class Server extends BaseEntity {
 
         const cwd = path.resolve(this.path, '..')
         const file = path.basename(this.path)
-        debug(`Executin in '${cwd}'`)
-        shell.execSync(`screen -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+        try {
+            shell.execSync(`screen -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
     }
 
     async getPermissions(role?: Role) {
