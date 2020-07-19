@@ -31,6 +31,11 @@ export default class AuthController {
         next();
     }
 
+    async requireAdmin(req: AuthRequest, _: Response, next: NextFunction) {
+        if(req.user?.role.name === 'admin') next();
+        else throw new HttpError(403, 'Illegal!')
+    }
+
     async register(req: Request) {
         const { username, password } = req.body;
 

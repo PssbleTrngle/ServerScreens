@@ -5,12 +5,15 @@ import UserController from './controller/UserController';
 import Apikey from './models/Apikey';
 import User from './models/User';
 import ServerController from './controller/ServerController';
+import ServerPermissions from './models/ServerPermissions';
+import PermissionsController from './controller/PermissionsController';
 
 interface IRoute {
     method: string;
     route: string;
     controller: any;
     action: string;
+    admin?: boolean;
 }
 
 const Resources: {
@@ -34,10 +37,35 @@ const authRoutes: IRoute[] = [
     },
 ]
 
+const permissionRoutes: IRoute[] = [
+    {
+        method: 'get',
+        route: '/api/permissions/server/:server',
+        controller: PermissionsController,
+        action: 'serverAll',
+        admin: true,
+    },
+    {
+        method: 'get',
+        route: '/api/permissions/server/:server/:role',
+        controller: PermissionsController,
+        action: 'serverOne',
+        admin: true,
+    },
+    {
+        method: 'put',
+        route: '/api/permissions/server/:server/:role',
+        controller: PermissionsController,
+        action: 'serverUpdate',
+        admin: true,
+    },
+]
+
 export const Routes: IRoute[] = [
     ...resource('users', User),
     ...resource('apikeys', Apikey, true, { all: true, one: true }),
     ...authRoutes,
+    ...permissionRoutes,
     {
         controller: ServerController,
         action: 'get',

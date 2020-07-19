@@ -13,9 +13,11 @@ export default class ServerPermissions extends BaseEntity {
 
     @ManyToOne(() => Server, s => s.permissions)
     server!: Promise<Server>;
+    serverId?: number | string;
 
     @ManyToOne(() => Role, { eager: true })
     role!: Role;
+    roleId?: number | string;
 
     @Column(() => Permissions)
     permissions!: Permissions;

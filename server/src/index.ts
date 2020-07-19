@@ -83,9 +83,10 @@ createConnection(config as any).then(async connection => {
     });
 
     // register express routes from defined application routes
-    Routes.forEach(({ controller, action, route, method }) => {
+    Routes.forEach(({ controller, action, route, method, admin }) => {
 
         (app as any)[method](route, wrapper(new AuthController().authenticate));
+        if(admin) (app as any)[method](route, wrapper(new AuthController().requireAdmin));
 
         const c = new controller();
 
