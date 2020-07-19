@@ -1,0 +1,37 @@
+@mixin list {
+    height: 100%;
+    list-style: none;
+    overflow: hidden;
+    overflow-y: scroll;
+
+    li {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 10px;
+
+        &:hover,
+        &.active {
+            background-color: $light-gray;
+        }
+    }
+}
+
+ul.list {
+    @include list();
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: $gray;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $light-gray;
+
+    &:hover {
+        background: $lighter-gray;
+    }
+}

@@ -1,0 +1,26 @@
+version: "3.6"
+
+volumes:
+  public:
+    external: false
+
+services:
+  server:
+    depends_on:
+      - client
+    working_dir: /server
+    volumes:
+      - ./db:/server/db
+      - public:/client
+    build:
+      context: ../server
+      dockerfile: ../docker/server.dockerfile
+    env_file: "./.env"
+
+  client:
+    working_dir: /client
+    volumes:
+      - public:/client/out/
+    build:
+      context: ../client
+      dockerfile: ../docker/client.dockerfile

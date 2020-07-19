@@ -1,0 +1,47 @@
+.dialog {
+    position: fixed;
+    z-index: 1000;
+    overflow: hidden;
+
+    top: 150%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: top 0.3s cubic-bezier(0.7, 0.2, 0.6, 1.2);
+
+    border: 1px solid $light-gray;
+    padding: 20px 40px;
+    border-radius: 10px;
+
+    background-color: $bg;
+
+    &.enter-done {
+        top: 50%;
+    }
+
+    .demarg {
+        margin: -20px -40px;
+    }
+
+    .generic {
+        p {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            display: grid;
+            grid-auto-flow: column;
+            gap: 10px;
+            grid-auto-columns: 1fr;
+            grid-auto-rows: 1fr;
+        }
+    }
+}
+
+.curtain {
+    background-color: #000a;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: 999;
+}

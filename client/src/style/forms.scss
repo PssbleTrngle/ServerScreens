@@ -1,0 +1,105 @@
+option {
+    &:hover {
+        background: $primary;
+    }
+
+    &.highlight {
+        background: $light-gray;
+    }
+}
+
+input,
+button,
+select,
+[role="button"] {
+    background: $gray;
+    transition: border 0.1s linear, box-shadow 0.1s linear;
+    border: none;
+    color: $text;
+    padding: 5px;
+
+    &:focus,
+    &:hover {
+        outline: none;
+        border-color: transparent;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 2px $primary;
+    }
+
+    &:hover:not(:focus) {
+        box-shadow: 0 0 0 2px $light-gray;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        color: $light-gray;
+
+        &.primary {
+            background-color: $gray;
+        }
+    }
+
+    &.red {
+        color: #FFF;
+        background-color: $red;
+    }
+
+    &[type="text"],
+    &[type="password"],
+    &[type="number"] {
+        background: transparent;
+        transition: background 0.1s linear;
+        border-bottom: solid 1px $primary;
+
+        &:focus {
+            border-bottom-color: transparent;
+        }
+
+        &:hover:not(:focus) {
+            box-shadow: none;
+            background-color: $gray;
+        }
+
+        &.big {
+            width: calc(100% - 30px);
+            padding: 15px;
+            font-size: 1rem;
+        }
+    }
+}
+
+button,
+input[type="submit"],
+[role="button"] {
+    cursor: pointer;
+    border: 1px solid $light-gray;
+    color: $text;
+    background-color: $gray;
+
+    &.primary {
+        background-color: $primary;
+        border: none;
+
+        &:hover {
+            box-shadow: 0 0 0 2px $primary;
+        }
+    }
+}
+
+.multi-select {
+    display: grid;
+    gap: 10px;
+
+    grid-auto-columns: 1fr;
+}
+
+label.file {
+    cursor: pointer;
+    padding: 20px;
+    text-align: center;
+
+    & + input[type="file"] {
+    }
+}

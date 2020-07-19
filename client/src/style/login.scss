@@ -1,0 +1,16 @@
+.login {
+    display: grid;
+    grid-template:
+        "error" 40px
+        "form";
+
+    form {
+        display: grid;
+        grid-template:
+            "username"
+            "password"
+            "submit";
+
+        gap: 20px;
+    }
+}

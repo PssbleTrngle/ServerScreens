@@ -1,0 +1,27 @@
+name: Deploy to Dockerhub
+
+on:
+  push:
+    branches: [ master ]
+    paths: 
+      - docker/**
+      - client/**
+      - server/**
+  repository_dispatch:
+    types: [deploy]
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create .env file
+      run: touch ./.env && echo "${{ secrets.DOCKER_ENV }}" > ./.env 
+      working-directory: docker
+    - name: Build
+      run: docker-compose build server
+      working-directory: docker
+    - name: Login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - name: Push
+      run: docker push dockergelb/diary

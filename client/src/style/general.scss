@@ -1,0 +1,166 @@
+a {
+    &,
+    &:hover,
+    &:active {
+        text-decoration: none;
+        color: $text;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    &:first-child {
+        margin-top: 15px;
+    }
+}
+
+@mixin grid-borders() {
+    & > * {
+        box-shadow: 0 0 0 $border-width / 2 $border-color;
+    }
+}
+
+@mixin pseudo {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin hover($by: 0.05) {
+    &:hover {
+        transform: translateY(-$by * 100%);
+    }
+}
+
+@mixin lighten($by: 0.5) {
+    @include hover();
+    filter: brightness(1);
+    &:hover {
+        filter: brightness(1 + $by);
+    }
+}
+
+.center {
+    text-align: center;
+}
+
+.empty-info {
+    text-align: center;
+    padding: 10px;
+    color: $light-gray;
+}
+
+.error {
+    text-align: center;
+    color: $red;
+    border-radius: 3px;
+    border: 1px $red dashed;
+    margin: 5px 0;
+    padding: 4px;
+}
+
+& > section {
+    background-color: $bg;
+    font-family: sans-serif;
+    color: $text;
+
+    display: grid;
+
+    height: 100vh;
+}
+
+.single {
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: grid;
+    justify-content: center;
+
+    grid-template:
+        ". nav" $nav-height
+        "page page"
+        / 1fr $nav-height;
+}
+
+.page {
+    justify-content: center;
+}
+
+img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.icon-button {
+    border-radius: 100%;
+    transition: background 0.1s linear;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+        background-color: $lighten;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        color: $lighter-gray;
+    }
+}
+
+.seperate-comma {
+    &:not(:last-child)::after {
+        content: ", ";
+    }
+}
+
+span + svg {
+    margin-left: 10px;
+}
+
+svg + span {
+    margin-left: 10px;
+}
+
+@keyframes load {
+    from {
+        padding: 10px;
+        opacity: 0.6;
+    }
+    to {
+        padding: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    animation: rotate 1s cubic-bezier(0.54, 0.29, 0.41, 0.66) infinite;
+    margin: auto;
+}
+
+@import "./forms.scss";
+@import "./nav.scss";
+@import "./dialog.scss";
+@import "./messages.scss";
+@import "./list.scss";
+@import "./img.scss";
+@import "./login.scss";
+@import "./settings.scss";

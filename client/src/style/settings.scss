@@ -1,0 +1,30 @@
+#settings {
+    .panels {
+        display: grid;
+        min-height: 50vh;
+        justify-content: center;
+        align-items: center;
+
+        & > div {
+            width: fit-content;
+            padding: 20px;
+            border: 2px solid $gray;
+            border-radius: 15px;
+            width: 100%;
+
+            ul.buttons {
+                justify-content: center;
+                display: grid;
+                gap: 15px;
+                grid-auto-flow: column;
+                grid-auto-columns: 36px;
+            }
+
+            h3 {
+                text-transform: capitalize;
+                text-align: center;
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
