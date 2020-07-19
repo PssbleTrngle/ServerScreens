@@ -22,23 +22,9 @@ export interface IApiKey extends IModel {
     purpose: string;
 }
 
-export interface IService extends IModel {
+export interface IServer extends IModel {
     name: string;
-}
-
-export interface ILogin extends IModel {
-    service: IService;
-    user: IUser;
-    apiId: string | number;
-}
-
-export interface IEntry extends IOwned {
-    timestamps: ITimestamps;
-    text?: string;
-    images?: string[];
-    link?: string;
-    title: string;
-    service?: IService;
+    online: boolean;
 }
 
 export type IList<T> = Array<T>;

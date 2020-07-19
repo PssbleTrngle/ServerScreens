@@ -1,0 +1,57 @@
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, BeforeUpdate, JoinColumn, OneToOne, OneToMany } from "typeorm";
+import shell from 'child_process'
+import ServerPermissions from "./ServerPermissions";
+import Role from "./Role";
+import { merge } from 'lodash'
+import Permissions from "./Permissions";
+
+@Entity()
+export default class Server extends BaseEntity {
+
+    static NAME_REGEX = /^[a-z_-]{3,30}$/i
+
+    @PrimaryGeneratedColumn()
+    id!: number;
+
+    @Column({ type: 'text' })
+    name!: string;
+
+    @Column({ type: 'text' })
+    path!: string;
+
+    async isRunning() {
+        const output = shell.execSync(`screen -S ${this.name} -Q select . ; echo $?`).toString();
+        console.log(output, output === '0');
+        return output === '0';
+    }
+
+    async start() {
+        this.stop();
+        shell.execSync(`screen -S "${this.name}"  java -Xms1024M -Xmx4048M -jar ${this.path}`)
+    }
+
+    async getPermissions(role?: Role) {
+        const r = role ?? await Role.defaultRole();
+        const specific = this.permissions.find(p => p.role.id === r.id) ?? {}
+        const base = r.permissions;
+        return merge({ ...specific }, base)
+    }
+
+    stop() {
+        this.execute('stop')
+    }
+
+    execute(command: string) {
+        const escaped = command.replace("'", "\\'")
+        shell.execSync(`screen -r nether -X stuff '${escaped}^M'`)
+    }
+
+    @OneToMany(() => ServerPermissions, p => p.server, { eager: true })
+    permissions!: ServerPermissions[];
+
+    async can(what: keyof Permissions, role?: Role) {
+        const permissions = await this.getPermissions(role);
+        return permissions[what] === true;
+    }
+
+}

@@ -13,8 +13,8 @@ import User from "./models/User";
 import { Routes } from "./routes";
 
 export type AuthRequest = Request<ParamsDictionary, Response, any> & {
-    user: User,
-    key: Apikey,
+    user?: User,
+    key?: Apikey,
 };
 export type ApiFunc<R extends Request = AuthRequest> = (req: R, res: Response, next: NextFunction) => unknown;
 export type App = {
@@ -33,6 +33,7 @@ createConnection(config as any).then(async connection => {
     // create express app
     const app: App = express();
     app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     function wrapper(func: ApiFunc): ApiFunc {
         return async (req, res, next) => {
@@ -84,9 +85,9 @@ createConnection(config as any).then(async connection => {
     });
 
     // register express routes from defined application routes
-    Routes.forEach(({ controller, action, route, method, auth }) => {
+    Routes.forEach(({ controller, action, route, method }) => {
 
-        if (auth) (app as any)[method](route, wrapper(new AuthController().authenticate));
+        (app as any)[method](route, wrapper(new AuthController().authenticate));
 
         const c = new controller();
 

@@ -1,19 +1,16 @@
 import { BaseEntity } from 'typeorm';
 import AuthController from './controller/AuthController';
 import ResourceController, { EntityStatic } from './controller/ResourceController';
-import ServiceController from './controller/ServiceController';
 import UserController from './controller/UserController';
 import Apikey from './models/Apikey';
-import Login from './models/Login';
-import { Service } from './models/Service';
 import User from './models/User';
+import ServerController from './controller/ServerController';
 
 interface IRoute {
     method: string;
     route: string;
     controller: any;
     action: string;
-    auth?: boolean;
 }
 
 const Resources: {
@@ -22,24 +19,7 @@ const Resources: {
     filter?: Filter;
 }[] = [];
 
-export const Routes: IRoute[] = [
-    ...resource('users', User),
-    ...resource('apikeys', Apikey, true, { all: true, one: true }),
-    ...resource('logins', Login, true, { all: true, one: true, remove: true }),
-    ...resource('services', Service),
-    {
-        method: 'post',
-        route: '/auth/:name',
-        controller: ServiceController,
-        action: 'authorize',
-        auth: true,
-    },
-    {
-        method: 'get',
-        route: '/auth/:name',
-        controller: ServiceController,
-        action: 'redirect'
-    },
+const authRoutes: IRoute[] = [
     {
         method: 'post',
         route: '/api/apikey',
@@ -51,14 +31,48 @@ export const Routes: IRoute[] = [
         route: '/api/apikey',
         controller: AuthController,
         action: 'logout',
-        auth: true,
+    },
+]
+
+export const Routes: IRoute[] = [
+    ...resource('users', User),
+    ...resource('apikeys', Apikey, true, { all: true, one: true }),
+    ...authRoutes,
+    {
+        controller: ServerController,
+        action: 'get',
+        route: '/api/server/:id',
+        method: 'get',
     },
     {
+        controller: ServerController,
+        action: 'all',
+        route: '/api/server',
         method: 'get',
-        route: '/api/user',
-        controller: UserController,
-        action: 'get',
-        auth: true,
+    },
+    {
+        controller: ServerController,
+        action: 'start',
+        route: '/api/server/:id/start',
+        method: 'post',
+    },
+    {
+        controller: ServerController,
+        action: 'stop',
+        route: '/api/server/:id/stop',
+        method: 'post',
+    },
+    {
+        controller: ServerController,
+        action: 'create',
+        route: '/api/server',
+        method: 'post',
+    },
+    {
+        controller: ServerController,
+        action: 'update',
+        route: '/api/server/:id',
+        method: 'put',
     },
     resources()
 ];

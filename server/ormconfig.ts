@@ -6,7 +6,7 @@ debug('Config Loaded');
 const ts = __filename.endsWith('.ts');
 const files = (folder: string) => [ts ? `src/${folder}/**/*.ts` : `build/src/${folder}/**/*.js`]
 
-export default {
+const config = {
    type: process.env.DB_DIALECT,
    database: process.env.DB_STORAGE || process.env.DB_NAME,
    synchronize: true,
@@ -22,3 +22,6 @@ export default {
       subscribersDir: 'src/subscriber'
    }
 };
+
+module.exports = config;
+export default config;

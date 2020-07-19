@@ -8,10 +8,9 @@ import Cell from './components/Cell';
 import Dialog, { Provider as DialogProvider } from './components/Dialog';
 import Navbar from './components/Navbar';
 import Settings, { Provider as SettingsProvider, useSettingsProvider } from './components/Settings';
-import Apikeys from './pages/Apikeys';
 import Login from './pages/Login';
-import UserPanel from './pages/UserPanel';
 import './style/app.scss';
+import List from './pages/List';
 
 const SinglePage = ({ children }: { children: ReactNode }) => {
 	return <section className='single'>{children}</section>;
@@ -37,9 +36,8 @@ const App = () => {
 	const { theme } = settings.client;
 
 	const pages: IPage[] = [
-		{ path: '/user', component: UserPanel },
-		{ path: '/settings/logins', component: Apikeys },
 		{ path: '/settings', component: Settings, icon: faCog },
+		{ path: '/', component: List, id: 'list' },
 	];
 
 	return (
@@ -51,7 +49,6 @@ const App = () => {
 						{loggedIn
 							? <section className='container'>
 
-								<Navbar pages={pages.filter(p => !!p.icon)} />
 								<Dialog />
 
 								<Switch>

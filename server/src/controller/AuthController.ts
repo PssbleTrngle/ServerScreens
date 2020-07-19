@@ -18,13 +18,15 @@ export default class AuthController {
 
         const key = (req.headers.authorization ?? '').split(' ')[1] ?? '';
         const apikey = await Apikey.findOne({ where: { key }, relations: ['user'] });
-        if (!apikey) throw new HttpError(401, 'Not authenticated');
+        if (apikey) {
 
-        req.user = apikey.user;
-        req.key = apikey;
+            req.user = apikey.user;
+            req.key = apikey;
+    
+            apikey.timestamps.updated = new Date();
+            apikey.save();
 
-        apikey.timestamps.updated = new Date();
-        apikey.save();
+        }
     }
 
     async register(req: Request) {
@@ -40,7 +42,7 @@ export default class AuthController {
     }
 
     async logout(req: AuthRequest) {
-        await req.key.remove()
+        await req.key?.remove()
         return true;
     }
 

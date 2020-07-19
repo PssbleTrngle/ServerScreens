@@ -180,6 +180,10 @@ class Api {
         if (response.status !== 201) throw new Error(await response.text());
 
         const { key } = await response.json()
+
+        console.log(key);
+        return;
+        
         localStorage.setItem('apikey', key);
 
         window.location.reload();

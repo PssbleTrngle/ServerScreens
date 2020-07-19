@@ -25,7 +25,7 @@ export default function <E extends IEntity>(Resource: EntityStatic<E>, owned: bo
         private authorized(entity: IEntity | undefined | null, req: AuthRequest) {
             if (owned && entity) {
                 if (!entity.user) throw new Error(`User not included in owned entity ${Resource}`)
-                if (entity.user.id !== req.user.id) {
+                if (entity.user.id !== req.user?.id) {
                     throw new HttpError(401, 'Not authorized')
                 }
             }

@@ -1,5 +1,8 @@
 FROM node:latest
 
+RUN apt-get update \
+    && apt-get install -y screen --no-install-recommends
+
 # Install server dependencies
 COPY ./package.json server/
 RUN cd /server && npm install --no-audit --no-package-lock
