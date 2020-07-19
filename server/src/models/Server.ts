@@ -20,10 +20,12 @@ export default class Server extends BaseEntity {
     path!: string;
 
     async isRunning() {
-        const output = shell.execSync(`screen -S ${this.name} -Q select .`).toString();
-        const found = !output;
-        console.log(`Output: "${output}"`)
-        return found;
+        try {
+            shell.execSync(`screen -S ${this.name} -Q select .`)
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     async start() {
