@@ -44,7 +44,7 @@ export default class Server extends BaseEntity {
         const cwd = path.resolve(this.path, '..')
         const file = path.basename(this.path)
         try {
-            shell.execSync(`screen -cx -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+            shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
         } catch (e) {
             console.error(e);
             console.error(e.output?.toString())
