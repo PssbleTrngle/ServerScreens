@@ -29,7 +29,9 @@ export default class Server extends BaseEntity {
     }
 
     async start() {
-        this.stop();
+        try {
+            this.stop();
+        } catch { }
         shell.execSync(`screen -S "${this.name}"  java -Xms1024M -Xmx4048M -jar ${this.path}`)
     }
 

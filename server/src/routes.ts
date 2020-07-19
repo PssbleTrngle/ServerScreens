@@ -74,6 +74,12 @@ export const Routes: IRoute[] = [
         route: '/api/server/:id',
         method: 'put',
     },
+    {
+        controller: ServerController,
+        action: 'icon',
+        route: '/api/server/:id/icon',
+        method: 'get',
+    },
     resources()
 ];
 

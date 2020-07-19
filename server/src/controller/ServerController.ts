@@ -1,10 +1,11 @@
 import { AuthRequest } from "..";
 import Server from "../models/Server";
 import { HttpError } from "./ResourceController";
-import { Request } from "express";
+import { Request, Response } from "express";
 import Permissions from "../models/Permissions";
 import Role from "../models/Role";
 import { debug } from "../logging";
+import path from 'path'
 
 async function parseServer(server: Server, req: AuthRequest) {
     const online = await server.isRunning();
@@ -65,6 +66,16 @@ export default class ServerController {
             Object.assign(s, { path, name })
             return s.save();
         })
+    }
+
+    async icon(req: AuthRequest, res: Response) {
+        const s = await Server.findOne(req.params.id);
+        if(!s) return null;
+        const server = parseServer(s, req)
+        if(!server) throw new HttpError(403, 'Illegal!')
+
+        const iconPath = path.resolve(s.path, '..', 'server-icon.png');
+        res.sendFile(iconPath);
     }
 
 }
