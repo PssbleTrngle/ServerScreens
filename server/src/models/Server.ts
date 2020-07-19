@@ -4,6 +4,7 @@ import ServerPermissions from "./ServerPermissions";
 import Role from "./Role";
 import { merge } from 'lodash'
 import Permissions from "./Permissions";
+import path from 'path'
 
 @Entity()
 export default class Server extends BaseEntity {
@@ -32,7 +33,10 @@ export default class Server extends BaseEntity {
         try {
             this.stop();
         } catch { }
-        shell.execSync(`screen -S "${this.name}"  java -Xms1024M -Xmx4048M -jar ${this.path}`)
+
+        const cwd = path.resolve(this.path, '..')
+        const file = path.basename(this.path)
+        shell.execSync(`screen -S "${this.name}"  java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
     }
 
     async getPermissions(role?: Role) {
