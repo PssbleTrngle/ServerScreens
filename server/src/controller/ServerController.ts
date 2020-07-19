@@ -8,13 +8,18 @@ import { debug } from "../logging";
 import path from 'path'
 
 async function parseServer(server: Server, req: AuthRequest) {
-    const online = await server.isRunning();
-    const permissions = await server.getPermissions(req.user?.role)
+    const [online, permissions, properties] = await Promise.all([
+        await server.isRunning(),
+        await server.getPermissions(req.user?.role),
+        await server.properties(),
+    ])
+
     const show = online ? permissions.visible : permissions.visibleOffline;
+
     if (!show) return null;
 
     const { name, id } = server;
-    return { name, online, id, permissions };
+    return { name, online, id, permissions, properties };
 }
 
 async function perform(req: AuthRequest, permission: keyof Permissions, action: (s: Server) => any) {
@@ -70,9 +75,9 @@ export default class ServerController {
 
     async icon(req: AuthRequest, res: Response) {
         const s = await Server.findOne(req.params.id);
-        if(!s) return null;
+        if (!s) return null;
         const server = parseServer(s, req)
-        if(!server) throw new HttpError(403, 'Illegal!')
+        if (!server) throw new HttpError(403, 'Illegal!')
 
         const iconPath = path.resolve(s.path, '..', 'server-icon.png');
         res.sendFile(iconPath);

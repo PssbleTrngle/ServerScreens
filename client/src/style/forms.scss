@@ -1,105 +1,66 @@
-option {
-    &:hover {
-        background: $primary;
-    }
-
-    &.highlight {
-        background: $light-gray;
-    }
-}
-
-input,
 button,
-select,
-[role="button"] {
-    background: $gray;
+input,
+select {
     transition: border 0.1s linear, box-shadow 0.1s linear;
     border: none;
     color: $text;
-    padding: 5px;
+    font-family: minecraft;
+
+    max-width: 200px;
 
     &:focus,
     &:hover {
         outline: none;
         border-color: transparent;
     }
-
-    &:focus {
-        box-shadow: 0 0 0 2px $primary;
-    }
-
-    &:hover:not(:focus) {
-        box-shadow: 0 0 0 2px $light-gray;
-    }
-
-    &.disabled {
-        pointer-events: none;
-        color: $light-gray;
-
-        &.primary {
-            background-color: $gray;
-        }
-    }
-
-    &.red {
-        color: #FFF;
-        background-color: $red;
-    }
-
-    &[type="text"],
-    &[type="password"],
-    &[type="number"] {
-        background: transparent;
-        transition: background 0.1s linear;
-        border-bottom: solid 1px $primary;
-
-        &:focus {
-            border-bottom-color: transparent;
-        }
-
-        &:hover:not(:focus) {
-            box-shadow: none;
-            background-color: $gray;
-        }
-
-        &.big {
-            width: calc(100% - 30px);
-            padding: 15px;
-            font-size: 1rem;
-        }
-    }
 }
 
 button,
-input[type="submit"],
+[type="submit"],
 [role="button"] {
+    padding: 5px;
     cursor: pointer;
-    border: 1px solid $light-gray;
-    color: $text;
-    background-color: $gray;
 
-    &.primary {
-        background-color: $primary;
-        border: none;
+    @mixin image($file) {
+        position: relative;
 
-        &:hover {
-            box-shadow: 0 0 0 2px $primary;
+        &,
+        &::after {
+            background-image: $file;
+            background-size: cover;
+            image-rendering: pixelated;
         }
+
+        &::after {
+            @include pseudo();
+            width: 2px;
+            transform: translate(-100%, -50%);
+            left: 100%;
+            background-position: right;
+        }
+    }
+
+    @include image(url("../assets/button.png"));
+
+    &:focus,
+    &:hover {
+        @include image(url("../assets/button_active.png"));
+    }
+
+    &:disabled {
+        pointer-events: none;
+        color: $light-gray;
+
+        @include image(url("../assets/button_disabled.png"));
     }
 }
 
-.multi-select {
-    display: grid;
-    gap: 10px;
-
-    grid-auto-columns: 1fr;
-}
-
-label.file {
-    cursor: pointer;
-    padding: 20px;
-    text-align: center;
-
-    & + input[type="file"] {
+input {
+    &[type="text"],
+    &[type="password"] {
+        padding: 5px;
+        background-color: #0005;
+        border-radius: 0;
+        border: 2px solid #0008;
     }
 }

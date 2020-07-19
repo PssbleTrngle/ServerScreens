@@ -1,37 +1,55 @@
-@mixin list {
-    height: 100%;
-    list-style: none;
-    overflow: hidden;
-    overflow-y: scroll;
+#list {
+    display: grid;
+    justify-content: center;
+    padding: 20px 0;
 
-    li {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        padding: 10px;
+    .servers {
+        li {
+            width: 80vw;
+            max-width: 600px;
+            $size: 100px;
+            height: $size;
+            display: grid;
+            grid-template:
+                "icon title status"
+                "icon description button"
+                / $size 1fr;
+            gap: 10px;
 
-        &:hover,
-        &.active {
-            background-color: $light-gray;
+            text-align: left;
+
+            img {
+                grid-area: icon;
+                image-rendering: pixelated;
+            }
+
+            h1 {
+                grid-area: title;
+            }
+
+            h2 {
+                grid-area: description;
+            }
+
+            button {
+                grid-area: button;
+                width: 40px;
+                height: 40px;
+            }
+
+            .status {
+                $size: 20px;
+                gap: 15px;
+                grid-area: status;
+                align-items: flex-end;
+                height: $size;
+
+                display: grid;
+                grid-template:
+                    "text icon"
+                    / 1fr $size;
+                justify-self: right;
+            }
         }
-    }
-}
-
-ul.list {
-    @include list();
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: $gray;
-}
-
-::-webkit-scrollbar-thumb {
-    background: $light-gray;
-
-    &:hover {
-        background: $lighter-gray;
     }
 }

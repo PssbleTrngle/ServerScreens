@@ -22,9 +22,29 @@ export interface IApiKey extends IModel {
     purpose: string;
 }
 
+export interface IPermissions {
+    visible: boolean,
+    visibleOffline: boolean,
+    start: boolean,
+    stop: boolean,
+    restart: boolean,
+    update: boolean,
+    create: boolean
+}
+
 export interface IServer extends IModel {
-    name: string;
-    online: boolean;
+    name: string,
+    online: boolean,
+    id: number,
+    permissions: IPermissions
+    properties?: IProperties
+}
+
+export interface IProperties {
+    motd: string;
+    gamemode: string;
+    difficulty: string;
+    'server-port': number;
 }
 
 export type IList<T> = Array<T>;

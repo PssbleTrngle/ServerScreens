@@ -8,19 +8,7 @@ html {
     margin: 0;
     padding: 0;
     transition: background 0.1s linear, opacity 0.1s linear, filter 0.1s linear, transform 0.15s ease-out;
+    font-weight: normal;
 }
 
-.dark {
-    @import "./themes/dark.scss";
-    @import "./general.scss";
-}
-
-.light {
-    @import "./themes/light.scss";
-    @import "./general.scss";
-}
-
-.red {
-    @import "./themes/red.scss";
-    @import "./general.scss";
-}
+@import "./general.scss";

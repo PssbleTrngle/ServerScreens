@@ -1,20 +1,11 @@
 import { faCog, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import classes from 'classnames';
-import React, { MemoExoticComponent, ReactNode, useEffect, useState } from 'react';
+import React, { MemoExoticComponent, useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import Api from './api/Api';
-import { Loading } from './api/Hooks';
 import Cell from './components/Cell';
-import Dialog, { Provider as DialogProvider } from './components/Dialog';
-import Navbar from './components/Navbar';
-import Settings, { Provider as SettingsProvider, useSettingsProvider } from './components/Settings';
-import Login from './pages/Login';
-import './style/app.scss';
 import List from './pages/List';
-
-const SinglePage = ({ children }: { children: ReactNode }) => {
-	return <section className='single'>{children}</section>;
-}
+import './style/app.scss';
+import Login from './pages/Login';
 
 const Logout = () => {
 	useEffect(() => {
@@ -24,70 +15,41 @@ const Logout = () => {
 }
 
 const App = () => {
-	const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
-
-	useEffect(() => {
-		Api.isLoggedIn().then(b => setLoggedIn(b));
-	}, []);
-
-	const dialog = useState<JSX.Element | null>(null);
-
-	const [settings, setSettings] = useSettingsProvider();
-	const { theme } = settings.client;
 
 	const pages: IPage[] = [
-		{ path: '/settings', component: Settings, icon: faCog },
+		{ path: '/login', component: Login },
 		{ path: '/', component: List, id: 'list' },
 	];
 
 	return (
-		<SettingsProvider value={[settings, setSettings]}>
-			<DialogProvider value={dialog}>
+		<Router>
+			<section className='container'>
 
-				<Router>
-					<section className={classes(theme)}>
-						{loggedIn
-							? <section className='container'>
+				<Switch>
 
-								<Dialog />
+					{pages.map(page =>
+						<Route key={page.path} path={page.path}>
+							<Page {...page} />
+						</Route >
+					)}
 
-								<Switch>
+					<Route exact path='/'>
+						<Redirect to='/timeline' />
+					</Route>
 
-									{pages.map(page =>
-										<Route key={page.path} path={page.path}>
-											<Page {...page} />
-										</Route >
-									)}
+					<Route path='/logout'>
+						<Logout />
+					</Route>
 
-									<Route exact path='/'>
-										<Redirect to='/timeline' />
-									</Route>
+					<Route>
+						<Cell area='page'>
+							<h1 className='empty-info'>404 - Not Found</h1>
+						</Cell>
+					</Route>
 
-									<Route path='/logout'>
-										<Logout />
-									</Route>
-
-									<Route>
-										<Cell area='page'>
-											<h1 className='empty-info'>404 - Not Found</h1>
-										</Cell>
-									</Route>
-
-								</Switch>
-							</section>
-
-							: <SinglePage>
-								{loggedIn === false
-									? <Login />
-									: <Loading />
-								}
-							</SinglePage>
-						}
-					</section>
-				</Router>
-
-			</DialogProvider>
-		</SettingsProvider>
+				</Switch>
+			</section>
+		</Router>
 	);
 }
 

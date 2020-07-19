@@ -25,7 +25,7 @@ class Api {
 
     private authorization() {
         const saved = localStorage.getItem('apikey');
-        if (!saved) throw new Error('Not logged in');
+        if (!saved) return '';
         return `Apikey ${saved}`;
     }
 
@@ -181,9 +181,6 @@ class Api {
 
         const { key } = await response.json()
 
-        console.log(key);
-        return;
-        
         localStorage.setItem('apikey', key);
 
         window.location.reload();

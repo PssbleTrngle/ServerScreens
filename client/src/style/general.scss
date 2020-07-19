@@ -66,9 +66,21 @@ h5 {
     padding: 4px;
 }
 
-& > section {
-    background-color: $bg;
-    font-family: sans-serif;
+section {
+    position: relative;
+
+    &::after {
+        @include pseudo();
+        position: fixed;
+        background-image: url("../assets/dirt.png");
+        background-size: 64px;
+        image-rendering: pixelated;
+        pointer-events: none;
+        filter: brightness(0.5);
+        z-index: -1;
+    }
+
+    font-family: minecraft, sans-serif;
     color: $text;
 
     display: grid;
@@ -93,6 +105,11 @@ h5 {
 
 .page {
     justify-content: center;
+    background-color: #0006;
+    height: fit-content;
+    min-height: calc(100vh - #{$nav-height * 2});
+    border-top: 3px solid #0007;
+    border-bottom: 3px solid #0007;
 }
 
 img {
@@ -158,9 +175,6 @@ svg + span {
 
 @import "./forms.scss";
 @import "./nav.scss";
-@import "./dialog.scss";
-@import "./messages.scss";
 @import "./list.scss";
 @import "./img.scss";
 @import "./login.scss";
-@import "./settings.scss";

@@ -5,11 +5,14 @@ import Role from "./Role";
 import { merge } from 'lodash'
 import Permissions from "./Permissions";
 import path from 'path'
+import fs from 'fs';
+import { debug } from '../logging'
 
 @Entity()
 export default class Server extends BaseEntity {
 
     static NAME_REGEX = /^[a-z_-]{3,30}$/i
+    static PROPS = ['server-port', 'motd', 'gamemode', 'difficulty']
 
     @PrimaryGeneratedColumn()
     id!: number;
@@ -36,7 +39,8 @@ export default class Server extends BaseEntity {
 
         const cwd = path.resolve(this.path, '..')
         const file = path.basename(this.path)
-        shell.execSync(`screen -S "${this.name}"  java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+        debug(`Executin in '${cwd}'`)
+        shell.execSync(`screen -S "${this.name}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
     }
 
     async getPermissions(role?: Role) {
@@ -52,7 +56,21 @@ export default class Server extends BaseEntity {
 
     execute(command: string) {
         const escaped = command.replace("'", "\\'")
-        shell.execSync(`screen -r nether -X stuff '${escaped}^M'`)
+        shell.execSync(`screen -r ${this.name} -X stuff '${escaped}^M'`)
+    }
+
+    async properties() {
+        const file = path.resolve(this.path, '..', 'server.properties')
+
+        if (fs.existsSync(file)) {
+            const content = fs.readFileSync(file).toString();
+            return content.split('\n')
+                .map(s => s.split('='))
+                .filter(([key]) => Server.PROPS.includes(key))
+                .reduce((o, [key, value]) => ({ ...o, [key]: value }), {})
+        }
+
+        return undefined;
     }
 
     @OneToMany(() => ServerPermissions, p => p.server, { eager: true })
