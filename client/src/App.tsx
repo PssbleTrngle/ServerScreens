@@ -64,10 +64,6 @@ const Page = (page: IPage) => {
 	const path = useLocation().pathname.slice(1) + '/';
 	const id = page.id ?? path.slice(0, path.indexOf('/'));
 
-	useEffect(() => {
-		document.title = id.charAt(0).toUpperCase() + id.slice(1).toLowerCase();
-	}, [id]);
-
 	return (
 		<Cell area='page' id={id}>
 			<page.component />
