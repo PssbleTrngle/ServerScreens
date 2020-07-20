@@ -44,12 +44,14 @@ export default class PermissionsController {
             .where('roleId = :role')
             .andWhere('serverId = :server')
             .setParameters({ server, role })
-            .getOne() ?? ServerPermissions.create({ roleId: role, serverId: server });
+            .getOne();
 
-        debug(JSON.stringify(permissions))
-
-        Object.assign(permissions.permissions, values)
-        await permissions.save();
+        if (permissions) {
+            Object.assign(permissions.permissions, values)
+            await permissions.save();
+        } else {
+            await ServerPermissions.create({ roleId: role, serverId: server, permissions }).save();
+        }
     }
 
     async roleAll(req: AuthRequest) {
