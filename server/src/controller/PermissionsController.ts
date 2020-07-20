@@ -37,13 +37,13 @@ export default class PermissionsController {
     }
 
     async serverUpdate(req: AuthRequest) {
-        const { role, server } = req.params;
+        const { role: roleId, server: serverId } = req.params;
         const permissions = req.body;
 
         const p = await ServerPermissions.createQueryBuilder()
-            .where('roleId = :role')
-            .andWhere('serverId = :server')
-            .setParameters({ server, role })
+            .where('roleId = :roleId')
+            .andWhere('serverId = :serverId')
+            .setParameters({ serverId, roleId })
             .getOne();
 
         if (p) {
@@ -51,7 +51,12 @@ export default class PermissionsController {
             debug(p.permissions)
             await p.save();
         } else {
-            await ServerPermissions.create({ roleId: role, serverId: server, permissions }).save();
+            const [role, server] = await Promise.all([
+                Role.findOne(roleId),
+                Server.findOne(serverId),
+            ])
+            if (!role || !server) return null;
+            await ServerPermissions.create({ role, server, permissions }).save();
         }
 
         return true;
