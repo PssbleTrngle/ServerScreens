@@ -27,20 +27,16 @@ const App = () => {
 
 				<Switch>
 
+					<Route path='/logout'>
+						<Logout />
+					</Route>
+
+
 					{pages.map(page =>
 						<Route key={page.path} path={page.path}>
 							<Page {...page} />
 						</Route >
 					)}
-
-					<Route exact path='/'>
-						<Redirect to='/timeline' />
-					</Route>
-
-					<Route path='/logout'>
-						<Logout />
-					</Route>
-
 					<Route>
 						<Cell area='page'>
 							<h1 className='empty-info'>404 - Not Found</h1>

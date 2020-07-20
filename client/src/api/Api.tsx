@@ -185,8 +185,7 @@ class Api {
         const { key } = await response.json()
 
         localStorage.setItem('apikey', key);
-
-        window.location.reload();
+        return true;
 
     }
 
