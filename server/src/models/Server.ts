@@ -52,7 +52,7 @@ export default class Server extends BaseEntity {
         }
     }
 
-    async getPermissions(role?: Role) {
+    async getPermissions(role?: Role): Promise<Permissions> {
         const r = role ?? await Role.defaultRole();
         const specific = await ServerPermissions.findOne({ role: r, server: this })
         const base = r.permissions;
