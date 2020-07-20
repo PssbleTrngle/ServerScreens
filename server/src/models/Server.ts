@@ -54,9 +54,9 @@ export default class Server extends BaseEntity {
 
     async getPermissions(role?: Role) {
         const r = role ?? await Role.defaultRole();
-        const specific = this.permissions.find(p => p.role.id === r.id) ?? {}
+        const { permissions: specific } = await ServerPermissions.findOne({ role, server: this }) ?? {}
         const base = r.permissions;
-        if(specific) {
+        if (specific) {
             debug('Server has specific roles for ' + r.name)
             debug(specific)
         }
@@ -87,7 +87,7 @@ export default class Server extends BaseEntity {
     }
 
     @OneToMany(() => ServerPermissions, p => p.server, { eager: true })
-    permissions!: ServerPermissions[];
+    permissions!: Promise<ServerPermissions[]>;
 
     async can(what: keyof Permissions, role?: Role) {
         const permissions = await this.getPermissions(role);

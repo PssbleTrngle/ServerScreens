@@ -9,11 +9,11 @@ import path from 'path'
 import fs from 'fs'
 import ServerPermissions from "../models/ServerPermissions";
 
-function parsePermissions(server: Server, role: Role) {
+async function parsePermissions(server: Server, role: Role) {
     const { id, name } = role;
     return {
         base: role.permissions,
-        specific: server.permissions.find(p => p.role.id === role.id)?.permissions ?? {},
+        specific: (await server.permissions).find(p => p.role.id === role.id)?.permissions ?? {},
         id, name
     };
 }
@@ -24,7 +24,7 @@ export default class PermissionsController {
         const server = await Server.findOne(req.params.server)
         const roles = await Role.find();
         if (!server) return null;
-        return roles.map(r => parsePermissions(server, r));
+        return Promise.all(roles.map(r => parsePermissions(server, r)));
     }
 
     async serverOne(req: AuthRequest) {
