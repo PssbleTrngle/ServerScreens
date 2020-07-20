@@ -11,6 +11,7 @@ import { debug, error, success } from "./logging";
 import Apikey from "./models/Apikey";
 import User from "./models/User";
 import { Routes } from "./routes";
+import https from 'https'
 
 export type AuthRequest = Request<ParamsDictionary, Response, any> & {
     user?: User,
@@ -86,7 +87,7 @@ createConnection(config as any).then(async connection => {
     Routes.forEach(({ controller, action, route, method, admin }) => {
 
         (app as any)[method](route, wrapper(new AuthController().authenticate));
-        if(admin) (app as any)[method](route, wrapper(new AuthController().requireAdmin));
+        if (admin) (app as any)[method](route, wrapper(new AuthController().requireAdmin));
 
         const c = new controller();
 
@@ -96,8 +97,10 @@ createConnection(config as any).then(async connection => {
         }));
     });
 
+    const server = https.createServer({}, app);
+
     const PORT = process.env.PORT ?? 8080;
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         success(`Server started on port ${chalk.underline(PORT)}`);
         console.log();
     });
