@@ -60,7 +60,9 @@ export default class Server extends BaseEntity {
             debug('Server has specific roles for ' + r.name)
             debug(specific)
         }
-        return { ...base, ...specific?.permissions ?? {} }
+        return Object.keys(base)
+            .map(k => k as keyof Permissions)
+            .reduce((o, k) => ({ ...o, [k]: specific?.permissions?.[k] ?? base[k] }), {})
     }
 
     stop() {
