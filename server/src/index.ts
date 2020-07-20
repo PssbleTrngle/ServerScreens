@@ -60,7 +60,7 @@ createConnection(config as any).then(async connection => {
             } catch (e) {
 
                 const status_code = e.status_code ?? 500;
-                if (status_code === 500 && process.env.DEBUG === 'true') {
+                if (status_code === 500 && process.env.NODE_ENV === 'development') {
                     error('Controller encountered unwanted error:')
                     error(e.message);
 
@@ -95,28 +95,6 @@ createConnection(config as any).then(async connection => {
             return c[action](req, res, next);
         }));
     });
-
-    // Insert default users for development
-    if (process.env.DEBUG) {
-
-        const anyUser = await User.findOne()
-        const { DEV_PASSWORD } = process.env;
-
-        if (!anyUser && DEV_PASSWORD) {
-
-            const password_hash = await new Promise<string>((res, rej) => bcrypt.hash(DEV_PASSWORD, 10, (e, hash) => {
-                if (e) rej(e);
-                else res(hash);
-            }));
-
-            for (const username of ['dev', 'dev2'])
-                await User.create({ username, password_hash, dev: true }).save()
-
-            debug('Created dev users');
-
-        }
-
-    }
 
     const PORT = process.env.PORT ?? 8080;
     app.listen(PORT, () => {
