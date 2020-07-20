@@ -38,20 +38,23 @@ export default class PermissionsController {
 
     async serverUpdate(req: AuthRequest) {
         const { role, server } = req.params;
-        const values = req.body;
+        const permissions = req.body;
 
-        const permissions = await ServerPermissions.createQueryBuilder()
+        const p = await ServerPermissions.createQueryBuilder()
             .where('roleId = :role')
             .andWhere('serverId = :server')
             .setParameters({ server, role })
             .getOne();
 
-        if (permissions) {
-            Object.assign(permissions.permissions, values)
-            await permissions.save();
+        if (p) {
+            Object.assign(p.permissions, permissions)
+            debug(p.permissions)
+            await p.save();
         } else {
             await ServerPermissions.create({ roleId: role, serverId: server, permissions }).save();
         }
+
+        return true;
     }
 
     async roleAll(req: AuthRequest) {
