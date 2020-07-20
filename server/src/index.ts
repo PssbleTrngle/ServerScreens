@@ -12,6 +12,7 @@ import Apikey from "./models/Apikey";
 import User from "./models/User";
 import { Routes } from "./routes";
 import https from 'https'
+import fs from 'fs'
 
 export type AuthRequest = Request<ParamsDictionary, Response, any> & {
     user?: User,
@@ -97,7 +98,12 @@ createConnection(config as any).then(async connection => {
         }));
     });
 
-    const server = https.createServer({}, app);
+    const { SSL_KEY, SSL_CERT } = process.env;
+
+    const key = SSL_KEY && fs.readFileSync(SSL_KEY);
+    const cert = SSL_CERT && fs.readFileSync(SSL_CERT);
+
+    const server = https.createServer({ key, cert }, app);
 
     const PORT = process.env.PORT ?? 8080;
     server.listen(PORT, () => {
