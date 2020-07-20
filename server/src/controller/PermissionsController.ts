@@ -13,7 +13,7 @@ function parsePermissions(server: Server, role: Role) {
     const { id, name } = role;
     return {
         base: role.permissions,
-        specific: server.permissions.find(p => p.role.id === role.id) ?? {},
+        specific: server.permissions.find(p => p.role.id === role.id)?.permissions ?? {},
         id, name
     };
 }
@@ -47,8 +47,6 @@ export default class PermissionsController {
             .getOne();
 
         if (p) {
-            console.log(p.permissions)
-            console.log(permissions)
             Object.assign(p.permissions, permissions)
             await p.save();
         } else {
