@@ -80,7 +80,7 @@ export function useApiBunch<R>(endpoints: string[]) {
 export function useApiList<M extends IModel>(endpoint: string, params?: ParsedUrlQueryInput) {
     const [models, loading, message] = useApi<IList<M>>(endpoint, params);
 
-    
+
     /*
     const sorted = useMemo(() => (models ?? [])
         .sort((a, b) => a.id - b.id), [models]);
@@ -113,14 +113,14 @@ export function useLoadingList<M extends IModel>(endpoint: string, params: Parse
  * @param data Optional body data
  * @param cb Optional callback function called on success with the response
  */
-export function useSubmit<R = any>(endpoint: string, data?: any, cb?: (r?: R) => unknown) {
+export function useSubmit<R = any>(endpoint: string, data?: any, method: 'post' | 'put' | 'delete' = 'post', cb?: (r?: R) => unknown) {
     const [error, setError] = useState<any>();
     const [inProgress, setLoading] = useState(false);
 
     const post = (e?: SyntheticEvent) => {
         e?.preventDefault();
         setLoading(true);
-        API.post<R>(endpoint, data)
+        API[method]<R>(endpoint, data)
             .then(r => {
                 if (cb) cb(r);
                 return undefined;

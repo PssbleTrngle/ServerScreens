@@ -47,6 +47,10 @@ button,
         @include image(url("../assets/button_active.png"));
     }
 
+    &.selected {
+        @include image(url("../assets/button_selected.png"));
+    }
+
     &:disabled {
         pointer-events: none;
         color: $light-gray;

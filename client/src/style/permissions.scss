@@ -1,0 +1,24 @@
+#permissions {
+    .permissions {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: center;
+        gap: 30px;
+
+        table {
+            th {
+                text-transform: uppercase;
+                padding: 20px 0;
+            }
+
+            td:first-child {
+                padding-right: 30px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+    }
+}

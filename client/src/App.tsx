@@ -6,6 +6,7 @@ import Cell from './components/Cell';
 import List from './pages/List';
 import './style/app.scss';
 import Login from './pages/Login';
+import Permissions from './pages/Permissions';
 
 const Logout = () => {
 	useEffect(() => {
@@ -18,6 +19,7 @@ const App = () => {
 
 	const pages: IPage[] = [
 		{ path: '/login', component: Login },
+		{ path: '/permissions/:id', component: Permissions },
 		{ path: '/', component: List, id: 'list' },
 	];
 

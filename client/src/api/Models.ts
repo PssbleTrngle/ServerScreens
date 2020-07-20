@@ -32,6 +32,15 @@ export interface IPermissions {
     create: boolean
 }
 
+export interface IRole extends IModel {
+    name: string
+}
+
+export interface IServerPermissions extends IRole {
+    base: IPermissions;
+    specific: IPermissions;
+}
+
 export interface IServer extends IModel {
     name: string,
     online: boolean,
