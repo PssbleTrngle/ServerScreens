@@ -56,7 +56,7 @@ export default class Server extends BaseEntity {
         const r = role ?? await Role.defaultRole();
         const specific = this.permissions.find(p => p.role.id === r.id) ?? {}
         const base = r.permissions;
-        return merge({ ...specific }, base)
+        return merge({ ...base }, specific)
     }
 
     stop() {
