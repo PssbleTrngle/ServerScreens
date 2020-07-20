@@ -47,8 +47,7 @@ export default class PermissionsController {
             .getOne();
 
         if (p) {
-            Object.assign(p.permissions, permissions)
-            console.log(p);
+            p.permissions = permissions
             await p.save();
         } else {
             const [role, server] = await Promise.all([
