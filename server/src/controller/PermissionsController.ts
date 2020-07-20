@@ -57,7 +57,6 @@ export default class PermissionsController {
                 Server.findOne(serverId),
             ])
             if (!role || !server) return null;
-            console.log(permissions)
             await ServerPermissions.create({ role, server, permissions }).save();
         }
 
