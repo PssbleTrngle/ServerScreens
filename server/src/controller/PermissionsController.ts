@@ -48,7 +48,6 @@ export default class PermissionsController {
 
         if (p) {
             Object.assign(p.permissions, permissions)
-            debug(p.permissions)
             await p.save();
         } else {
             const [role, server] = await Promise.all([
@@ -56,6 +55,7 @@ export default class PermissionsController {
                 Server.findOne(serverId),
             ])
             if (!role || !server) return null;
+            console.log({ role, server, permissions })
             await ServerPermissions.create({ role, server, permissions }).save();
         }
 
