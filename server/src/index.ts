@@ -98,12 +98,13 @@ createConnection(config as any).then(async connection => {
         }));
     });
 
-    const { SSL_KEY, SSL_CERT } = process.env;
+    const { SSL_KEY, SSL_CERT, SSL_CA } = process.env;
 
     const key = SSL_KEY && fs.readFileSync(SSL_KEY);
     const cert = SSL_CERT && fs.readFileSync(SSL_CERT);
+    const ca = SSL_CA && fs.readFileSync(SSL_CA);
 
-    const server = https.createServer({ key, cert }, app);
+    const server = https.createServer({ key, cert, ca }, app);
 
     const PORT = process.env.PORT ?? 8080;
     server.listen(PORT, () => {
