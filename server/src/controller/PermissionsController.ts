@@ -46,6 +46,8 @@ export default class PermissionsController {
             .setParameters({ server, role })
             .getOne() ?? ServerPermissions.create({ roleId: role, serverId: server });
 
+        debug(JSON.stringify(permissions))
+
         Object.assign(permissions.permissions, values)
         await permissions.save();
     }
