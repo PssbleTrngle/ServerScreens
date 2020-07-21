@@ -78,7 +78,7 @@ export default class ServerController {
         const server = parseServer(s, req)
         if (!server) throw new HttpError(403, 'Illegal!')
 
-        const iconPath = path.resolve(s.path, '..', 'server-icon.png');
+        const iconPath = path.resolve(Server.BASE_DIR, s.path, '..', 'server-icon.png');
         return fs.existsSync(iconPath) ? res.sendFile(iconPath) : null;
     }
 
