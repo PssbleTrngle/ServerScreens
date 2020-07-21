@@ -29,10 +29,10 @@ export type App = {
 } & express.Express;
 
 const CACHE = new Cache({ stdTTL: 0 })
-export function cached<T>(key: string, fallback: () => T, ttl?: number) {
+export async function cached<T>(key: string, fallback: () => T | Promise<T>, ttl?: number) {
     const c = CACHE.get<T>(key);
     if(c) return c;
-    const v = fallback();
+    const v = await fallback();
     CACHE.set<T>(key, v, ttl as number);
     return v;
 }

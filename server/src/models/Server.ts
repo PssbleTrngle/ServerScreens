@@ -14,6 +14,7 @@ import { clear } from "console";
 export default class Server extends BaseEntity {
 
     static PROPS = ['server-port', 'motd', 'gamemode', 'difficulty']
+    static BASE_DIR = process.env.BASE_DIR ?? ''
 
     @PrimaryGeneratedColumn()
     id!: number;
@@ -24,10 +25,10 @@ export default class Server extends BaseEntity {
     @Column({ type: 'text', unique: true })
     path!: string;
 
-    async isRunning() {
+    isRunning() {
         return cached(`${this.screenName()}:running`, () => {
             try {
-                (shell.execSync(`screen -S ${this.screenName()} -Q select .`))
+                shell.execSync(`screen -S ${this.screenName()} -Q select .`)
                 return true;
             } catch {
                 return false;
@@ -45,7 +46,7 @@ export default class Server extends BaseEntity {
             this.stop();
         } catch { }
 
-        const cwd = path.resolve(this.path, '..')
+        const cwd = path.resolve(Server.BASE_DIR, this.path, '..')
         const file = path.basename(this.path)
         try {
             shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
@@ -82,10 +83,10 @@ export default class Server extends BaseEntity {
         shell.execSync(`screen -r ${this.screenName()} -X stuff '${escaped}^M'`)
     }
 
-    async properties() {
+    properties() {
         return cached(`${this.screenName()}:properties`, () => {
 
-            const file = path.resolve(this.screenName(), '..', 'server.properties')
+            const file = path.resolve(Server.BASE_DIR, this.path, '..', 'server.properties')
 
             if (fs.existsSync(file)) {
                 const content = fs.readFileSync(file).toString();
