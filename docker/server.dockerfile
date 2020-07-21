@@ -1,22 +1,26 @@
 FROM node:latest
 
-RUN apt-get update \
-    && apt-get install -y software-properties-common --no-install-recommends
+ENV SCREEN_VERSION=4.6.2
 
-#RUN add-apt-repository 'deb [arch=amd64] http://ftp.gnu.org/gnu/screen/ multiverse' \
-RUN add-apt-repository 'deb http://ftp.gnu.org/gnu/ screen' \
-    && cat /etc/apt/sources.list \
-    && apt-get update \
-    && apt-get install -y screen --no-install-recommends
+# Download GNU Screen
+WORKDIR /tmp
+ADD http://git.savannah.gnu.org/cgit/screen.git/snapshot/v.${SCREEN_VERSION}.tar.gz screen.tar.gz
+RUN tar -xvf screen.tar.gz
+
+# Build GNU Screen
+RUN cd v.${SCREEN_VERSION}/src && ./autogen.sh && ./configure && make
+ENV PATH="/tmp/v.${SCREEN_VERSION}/src:${PATH}"
+
+WORKDIR /server
 
 # Install server dependencies
-COPY ./package.json server/
-RUN cd /server && npm install --no-audit --no-package-lock
+COPY ./package.json ./
+RUN npm install --no-audit --no-package-lock
 
 # Build server
-COPY ./src server/src/
-COPY ./tsconfig.json ./ormconfig.ts server/
+COPY ./src ./src/
+COPY ./tsconfig.json ./ormconfig.ts ./
 
-RUN cd /server && npm run build
+RUN npm run build
 
-CMD cd /server && npm run run
+CMD npm run run
