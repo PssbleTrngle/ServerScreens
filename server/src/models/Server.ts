@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, BeforeUpdate, JoinColumn, OneToOne, OneToMany } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, BeforeUpdate, JoinColumn, OneToOne, OneToMany, AfterUpdate } from "typeorm";
 import shell from 'child_process'
 import ServerPermissions from "./ServerPermissions";
 import Role from "./Role";
@@ -26,7 +26,7 @@ export default class Server extends BaseEntity {
     path!: string;
 
     isRunning() {
-        return cached(`${this.screenName()}:running`, () => {
+        return cached(`server:${this.id}:running`, () => {
             try {
                 shell.execSync(`screen -S ${this.screenName()} -Q select .`)
                 return true;
@@ -50,13 +50,13 @@ export default class Server extends BaseEntity {
         const file = path.basename(this.path)
         try {
             shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
-            clearCache(`${this.screenName()}:properties`)
+            clearCache(`server:${this.id}:properties`)
         } catch (e) {
             console.error(e);
             console.error(e.output?.toString())
             throw e;
         } finally {
-            clearCache(`${this.screenName()}:running`)
+            clearCache(`server:${this.id}:running`)
         }
     }
 
@@ -75,7 +75,7 @@ export default class Server extends BaseEntity {
 
     stop() {
         this.execute('stop')
-        clearCache(`${this.screenName()}:running`)
+        clearCache(`server:${this.id}:running`)
     }
 
     execute(command: string) {
@@ -84,7 +84,7 @@ export default class Server extends BaseEntity {
     }
 
     properties() {
-        return cached(`${this.screenName()}:properties`, () => {
+        return cached(`server:${this.id}:properties`, () => {
 
             const file = path.resolve(Server.BASE_DIR, this.path, '..', 'server.properties')
 
