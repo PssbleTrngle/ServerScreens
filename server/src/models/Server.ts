@@ -6,7 +6,7 @@ import { merge } from 'lodash'
 import Permissions from "./Permissions";
 import path from 'path'
 import fs from 'fs';
-import { debug } from '../logging'
+import { debug, info, error } from '../logging'
 import { cached, clearCache } from '..'
 import { clear } from "console";
 
@@ -48,12 +48,14 @@ export default class Server extends BaseEntity {
 
         const cwd = path.resolve(Server.BASE_DIR, this.path, '..')
         const file = path.basename(this.path)
+
         try {
             shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+            info(`Started server ${this.screenName()}`)
             clearCache(`server:${this.id}:properties`)
         } catch (e) {
-            console.error(e);
-            console.error(e.output?.toString())
+            error(e);
+            error(e.output?.toString())
             throw e;
         } finally {
             clearCache(`server:${this.id}:running`)
@@ -75,6 +77,7 @@ export default class Server extends BaseEntity {
 
     stop() {
         this.execute('stop')
+        info(`Stopped server ${this.screenName()}`)
         clearCache(`server:${this.id}:running`)
     }
 
