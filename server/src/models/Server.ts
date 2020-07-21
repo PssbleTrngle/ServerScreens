@@ -92,7 +92,7 @@ export default class Server extends BaseEntity {
                 const content = fs.readFileSync(file).toString();
                 return content.split('\n')
                     .map(s => s.split('='))
-                    .map(([k, v]) => [k, decodeURIComponent(v)])
+                    .map(([k, v]) => [k, JSON.parse(`"${v}"`)])
                     .filter(([key]) => Server.PROPS.includes(key))
                     .reduce((o, [key, value]) => ({ ...o, [key]: value }), {})
             }
