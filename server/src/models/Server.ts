@@ -7,6 +7,8 @@ import Permissions from "./Permissions";
 import path from 'path'
 import fs from 'fs';
 import { debug } from '../logging'
+import { cached, clearCache } from '..'
+import { clear } from "console";
 
 @Entity()
 export default class Server extends BaseEntity {
@@ -23,12 +25,14 @@ export default class Server extends BaseEntity {
     path!: string;
 
     async isRunning() {
-        try {
-            shell.execSync(`screen -S ${this.screenName()} -Q select .`)
-            return true;
-        } catch {
-            return false;
-        }
+        return cached(`${this.screenName()}:running`, () => {
+            try {
+                (shell.execSync(`screen -S ${this.screenName()} -Q select .`))
+                return true;
+            } catch {
+                return false;
+            }
+        }, 10 * 64)
     }
 
     screenName() {
@@ -45,10 +49,13 @@ export default class Server extends BaseEntity {
         const file = path.basename(this.path)
         try {
             shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+            clearCache(`${this.screenName()}:properties`)
         } catch (e) {
             console.error(e);
             console.error(e.output?.toString())
             throw e;
+        } finally {
+            clearCache(`${this.screenName()}:running`)
         }
     }
 
@@ -67,6 +74,7 @@ export default class Server extends BaseEntity {
 
     stop() {
         this.execute('stop')
+        clearCache(`${this.screenName()}:running`)
     }
 
     execute(command: string) {
@@ -75,17 +83,20 @@ export default class Server extends BaseEntity {
     }
 
     async properties() {
-        const file = path.resolve(this.screenName(), '..', 'server.properties')
+        return cached(`${this.screenName()}:properties`, () => {
 
-        if (fs.existsSync(file)) {
-            const content = fs.readFileSync(file).toString();
-            return content.split('\n')
-                .map(s => s.split('='))
-                .filter(([key]) => Server.PROPS.includes(key))
-                .reduce((o, [key, value]) => ({ ...o, [key]: value }), {})
-        }
+            const file = path.resolve(this.screenName(), '..', 'server.properties')
 
-        return undefined;
+            if (fs.existsSync(file)) {
+                const content = fs.readFileSync(file).toString();
+                return content.split('\n')
+                    .map(s => s.split('='))
+                    .filter(([key]) => Server.PROPS.includes(key))
+                    .reduce((o, [key, value]) => ({ ...o, [key]: value }), {})
+            }
+
+            return {};
+        })
     }
 
     @OneToMany(() => ServerPermissions, p => p.server, { eager: true })

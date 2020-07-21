@@ -13,6 +13,7 @@ import User from "./models/User";
 import { Routes } from "./routes";
 import https from 'https'
 import fs from 'fs'
+import Cache from 'node-cache'
 
 export type AuthRequest = Request<ParamsDictionary, Response, any> & {
     user?: User,
@@ -27,6 +28,18 @@ export type App = {
     use(url: string, ...func: ApiFunc[]): unknown,
 } & express.Express;
 
+const CACHE = new Cache({ stdTTL: 0 })
+export function cached<T>(key: string, fallback: () => T, ttl?: number) {
+    const c = CACHE.get<T>(key);
+    if(c) return c;
+    const v = fallback();
+    CACHE.set<T>(key, v, ttl as number);
+    return v;
+}
+
+export function clearCache(key: string) {
+    return CACHE.del(key);
+}
 
 createConnection(config as any).then(async connection => {
 
