@@ -10,6 +10,14 @@ import { debug, info, error } from '../logging'
 import { cached, clearCache } from '..'
 import { clear } from "console";
 
+function parseUnicode(value: string) {
+    try {
+        return decodeURIComponent(JSON.parse(`"${value}"`))
+    } catch {
+        return value.replace(/\\u00A7./, '').replace(/\\u(?:[0-9A-Za-z]{4}/, '');
+    }
+}
+
 @Entity()
 export default class Server extends BaseEntity {
 
@@ -95,7 +103,7 @@ export default class Server extends BaseEntity {
                 const content = fs.readFileSync(file).toString();
                 return content.split('\n')
                     .map(s => s.split('='))
-                    .map(([k, v]) => [k, JSON.parse(`"${v}"`)])
+                    .map(([k, v]) => [k, parseUnicode(v)])
                     .filter(([key]) => Server.PROPS.includes(key))
                     .reduce((o, [key, value]) => ({ ...o, [key]: value }), {})
             }
