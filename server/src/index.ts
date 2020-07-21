@@ -56,7 +56,7 @@ createConnection(config as any).then(async connection => {
                 const result = await func(req, res, next);
 
                 if (result !== void 0) {
-                    if (!!result) {
+                    if (result !== null && result !== undefined) {
 
                         if (typeof result === 'number') {
                             res.status(result).send();
@@ -110,6 +110,7 @@ createConnection(config as any).then(async connection => {
         }));
     });
 
+    /*
     const { SSL_KEY, SSL_CERT, SSL_CA } = process.env;
 
     const key = SSL_KEY && fs.readFileSync(SSL_KEY);
@@ -117,9 +118,10 @@ createConnection(config as any).then(async connection => {
     const ca = SSL_CA && fs.readFileSync(SSL_CA);
 
     const server = https.createServer({ key, cert, ca }, app);
+    */
 
     const PORT = process.env.PORT ?? 8080;
-    server.listen(PORT, () => {
+    app.listen(PORT, () => {
         success(`Server started on port ${chalk.underline(PORT)}`);
         console.log();
     });

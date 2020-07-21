@@ -11,16 +11,28 @@ RUN tar -xvf screen.tar.gz
 RUN cd v.${SCREEN_VERSION}/src && ./autogen.sh && ./configure && make
 ENV PATH="/tmp/v.${SCREEN_VERSION}/src:${PATH}"
 
-WORKDIR /server
-
-# Install server dependencies
-COPY ./package.json ./
+# Install client dependencies
+WORKDIR /client
+COPY ./client/package.json .
 RUN npm install --no-audit --no-package-lock
 
+# Install server dependencies
+WORKDIR /server
+COPY ./server/package.json ./
+RUN npm install --no-audit --no-package-lock
+
+# Build client
+WORKDIR /client
+COPY ./client/src ./src/
+COPY ./client/public ./public/
+COPY ./client/tsconfig.json .
+RUN npm run build
+
 # Build server
-COPY ./src ./src/
-COPY ./tsconfig.json ./ormconfig.ts ./
+WORKDIR /server
+COPY ./server/src ./src/
+COPY ./server/tsconfig.json ./server/ormconfig.ts ./
 
 RUN npm run build
 
-CMD npm run run
+CMD cd /server && npm run run
