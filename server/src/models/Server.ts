@@ -14,7 +14,7 @@ function parseUnicode(value: string) {
     try {
         return decodeURIComponent(JSON.parse(`"${value}"`))
     } catch {
-        return value.replace(/\\u00A7./, '').replace(/\\u(?:[0-9A-Za-z]{4}/, '');
+        return value.replace(/\\u00A7./, '').replace(/\\u[0-9A-Za-z]{4}/, '');
     }
 }
 
