@@ -31,7 +31,7 @@ export type App = {
 const CACHE = new Cache({ stdTTL: 0 })
 export async function cached<T>(key: string, fallback: () => T | PromiseLike<T>, ttl?: number) {
     const c = CACHE.get<T>(key);
-    if(c) return c;
+    if (c) return c;
     const v = await fallback();
     CACHE.set<T>(key, v, ttl as number);
     return v;
@@ -88,13 +88,14 @@ createConnection(config as any).then(async connection => {
         }
     }
 
-    app.use(express.static('/client'));
-    app.get('/', (_, res) => {
-        if (process.env.NODE_ENV === 'development')
-            res.redirect('http://localhost:3000')
-        else
-            res.sendFile('/client/index.html')
-    });
+    if (process.env.NODE_ENV !== 'development') {
+
+        app.use(express.static('/client/build'));
+
+        app.get('*', (_, res) => {
+            res.sendFile('/client/build/index.html');
+        });
+    }
 
     // register express routes from defined application routes
     Routes.forEach(({ controller, action, route, method, admin }) => {

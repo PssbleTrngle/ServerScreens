@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
     paths: 
-      - docker/**
+      - Dockerfile
       - client/**
       - server/**
   repository_dispatch:
@@ -15,13 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Create .env file
-      run: touch ./.env && echo "${{ secrets.DOCKER_ENV }}" > ./.env 
-      working-directory: docker
     - name: Build
-      run: docker-compose build server
-      working-directory: docker
+      run: docker build --tag ${{ secrets.DOCKER_USERNAME }}/server-screens:latest .
     - name: Login
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - name: Push
-      run: docker push dockergelb/diary
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/server-screens
