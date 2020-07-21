@@ -29,7 +29,7 @@ export type App = {
 } & express.Express;
 
 const CACHE = new Cache({ stdTTL: 0 })
-export async function cached<T>(key: string, fallback: () => T | Promise<T>, ttl?: number) {
+export async function cached<T>(key: string, fallback: () => T | PromiseLike<T>, ttl?: number) {
     const c = CACHE.get<T>(key);
     if(c) return c;
     const v = await fallback();
@@ -53,8 +53,7 @@ createConnection(config as any).then(async connection => {
     function wrapper(func: ApiFunc): ApiFunc {
         return async (req, res, next) => {
             try {
-                const r = func(req, res, next);
-                const result = r instanceof Promise ? await r : r;
+                const result = await func(req, res, next);
 
                 if (result !== void 0) {
                     if (!!result) {
