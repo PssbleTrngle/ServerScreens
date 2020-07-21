@@ -88,15 +88,6 @@ createConnection(config as any).then(async connection => {
         }
     }
 
-    if (process.env.NODE_ENV !== 'development') {
-
-        app.use(express.static('/client/build'));
-
-        app.get('*', (_, res) => {
-            res.sendFile('/client/build/index.html');
-        });
-    }
-
     // register express routes from defined application routes
     Routes.forEach(({ controller, action, route, method, admin }) => {
 
@@ -110,6 +101,15 @@ createConnection(config as any).then(async connection => {
             return c[action](req, res, next);
         }));
     });
+
+    if (process.env.NODE_ENV !== 'development') {
+
+        app.use(express.static('/client/build'));
+
+        app.get('*', (_, res) => {
+            res.sendFile('/client/build/index.html');
+        });
+    }
 
     /*
     const { SSL_KEY, SSL_CERT, SSL_CA } = process.env;
