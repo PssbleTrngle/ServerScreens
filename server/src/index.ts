@@ -108,24 +108,11 @@ createConnection(config as any).then(async connection => {
         }));
     });
 
-    if (process.env.NODE_ENV !== 'development') {
-
-        app.use(express.static('/client/build'));
-
-        app.get('*', (_, res) => {
-            res.sendFile('/client/build/index.html');
-        });
-    }
-
-    /*
-    const { SSL_KEY, SSL_CERT, SSL_CA } = process.env;
-
-    const key = SSL_KEY && fs.readFileSync(SSL_KEY);
-    const cert = SSL_CERT && fs.readFileSync(SSL_CERT);
-    const ca = SSL_CA && fs.readFileSync(SSL_CA);
-
-    const server = https.createServer({ key, cert, ca }, app);
-    */
+    // Serve Frontend
+    app.use(express.static('/client/build'));
+    app.get('*', (_, res) => {
+        res.sendFile('/client/build/index.html');
+    });
 
     const PORT = process.env.PORT ?? 8080;
     app.listen(PORT, () => {
