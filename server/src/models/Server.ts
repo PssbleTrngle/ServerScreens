@@ -58,7 +58,8 @@ export default class Server extends BaseEntity {
         const file = path.basename(this.path)
 
         try {
-            shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+            const output = shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+            debug(output.toString());
             info(`Started server ${this.screenName()}`)
             clearCache(`server:${this.id}:properties`)
         } catch (e) {
@@ -84,14 +85,15 @@ export default class Server extends BaseEntity {
     }
 
     stop() {
-        this.execute('stop')
+        const output = this.execute('stop')
+        debug(output.toString());
         info(`Stopped server ${this.screenName()}`)
         clearCache(`server:${this.id}:running`)
     }
 
     execute(command: string) {
         const escaped = command.replace("'", "\\'")
-        shell.execSync(`screen -r ${this.screenName()} -X stuff '${escaped}^M'`)
+        return shell.execSync(`screen -r ${this.screenName()} -X stuff '${escaped}^M'`)
     }
 
     properties() {

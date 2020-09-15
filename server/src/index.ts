@@ -29,6 +29,12 @@ export type App = {
 } & express.Express;
 
 const CACHE = new Cache({ stdTTL: 0 })
+
+if (process.env.CACHE_DEBUG) {
+    CACHE.on("set", k => debug(`Cache set ${chalk.italic(k)}`));
+    CACHE.on("del", k => debug(`Cache delete ${chalk.italic(k)}`));
+}
+
 export async function cached<T>(key: string, fallback: () => T | PromiseLike<T>, ttl?: number) {
     const c = CACHE.get<T>(key);
     if (c) return c;
