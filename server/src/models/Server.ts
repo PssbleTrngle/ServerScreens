@@ -56,7 +56,7 @@ export default class Server extends BaseEntity {
         const cwd = path.resolve(Server.BASE_DIR, this.path, '..')
         const file = path.basename(this.path)
 
-        if (fs.existsSync(this.path)) {
+        if (fs.existsSync(path.resolve(cwd, file))) {
 
             try {
                 const output = shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })

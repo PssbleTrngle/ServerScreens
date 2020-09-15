@@ -33,6 +33,7 @@ const CACHE = new Cache({ stdTTL: 0 })
 if (process.env.CACHE_DEBUG) {
     CACHE.on("set", k => debug(`Cache set ${chalk.italic(k)}`));
     CACHE.on("del", k => debug(`Cache delete ${chalk.italic(k)}`));
+    CACHE.on("expired", k => debug(`Cache expired ${chalk.italic(k)}`));
 }
 
 export async function cached<T>(key: string, fallback: () => T | PromiseLike<T>, ttl?: number) {
@@ -103,6 +104,7 @@ createConnection(config as any).then(async connection => {
         const c = new controller();
 
         (app as any)[method](route, wrapper((req: Request, res: Response, next: Function) => {
+            debug('');
             debug(`[${method.toUpperCase()}] -> '${route}'`);
             return c[action](req, res, next);
         }));
