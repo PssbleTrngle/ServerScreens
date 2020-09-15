@@ -1,14 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, BeforeUpdate, JoinColumn, OneToOne, OneToMany, AfterUpdate } from "typeorm";
-import shell from 'child_process'
-import ServerPermissions from "./ServerPermissions";
-import Role from "./Role";
-import { merge } from 'lodash'
-import Permissions from "./Permissions";
-import path from 'path'
+import shell from 'child_process';
 import fs from 'fs';
-import { debug, info, error } from '../logging'
-import { cached, clearCache } from '..'
-import { clear } from "console";
+import path from 'path';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { cached, clearCache } from '..';
+import { debug, error, info } from '../logging';
+import Permissions from "./Permissions";
+import Role from "./Role";
+import ServerPermissions from "./ServerPermissions";
 
 function parseUnicode(value: string) {
     try {
