@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import shell from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -55,17 +56,23 @@ export default class Server extends BaseEntity {
         const cwd = path.resolve(Server.BASE_DIR, this.path, '..')
         const file = path.basename(this.path)
 
-        try {
-            const output = shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
-            debug(output.toString());
-            info(`Started server ${this.screenName()}`)
-            clearCache(`server:${this.id}:properties`)
-        } catch (e) {
-            error(e);
-            error(e.output?.toString())
-            throw e;
-        } finally {
-            clearCache(`server:${this.id}:running`)
+        if (fs.existsSync(this.path)) {
+
+            try {
+                const output = shell.execSync(`screen -dm -S "${this.screenName()}" java -Xms1024M -Xmx4048M -jar ${file}`, { cwd })
+                debug(output.toString());
+                info(`Started server ${this.screenName()}`)
+                clearCache(`server:${this.id}:properties`)
+            } catch (e) {
+                error(e);
+                error(e.output?.toString())
+                throw e;
+            } finally {
+                clearCache(`server:${this.id}:running`)
+            }
+
+        } else {
+            error(`Server entrypoint specified at ${chalk.underline(this.path)} does not exist`)
         }
     }
 
@@ -73,10 +80,7 @@ export default class Server extends BaseEntity {
         const r = role ?? await Role.defaultRole();
         const specific = await ServerPermissions.findOne({ role: r, server: this })
         const base = r.permissions;
-        if (specific) {
-            debug('Server has specific roles for ' + r.name)
-            debug(specific)
-        }
+
         return Object.keys(base)
             .map(k => k as keyof Permissions)
             .reduce((o, k) => ({ ...o, [k]: specific?.permissions?.[k] ?? base[k] }), {})
